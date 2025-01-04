@@ -119,9 +119,9 @@ export function App() {
                             {
                                 (() => {
                                     switch (menuIndex) {
-                                        case 1:<Itineraries/>;
+                                        case 1: return <Itineraries onSelect={(itinerary) => console.log(itinerary)} />;
                                         default:
-                                            return <Itineraries />;
+                                            return <Itineraries onSelect={(itinerary) => console.log(itinerary)} />;
                                     }
                                 })()
                             }
