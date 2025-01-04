@@ -4,7 +4,8 @@
   "description": "A package containing a candidate API, which should be used in the challenge",
   "main": "index.js",
   "scripts": {
-    "start": "json-server --port 3010 --watch api.json"
+    "start": "json-server --port 3010 --watch api.json",
+    "dev": "vite"
   },
   "keywords": [
     "\"react\"",
