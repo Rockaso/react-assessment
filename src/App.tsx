@@ -69,7 +69,7 @@ export function App() {
                     },
 
                     token: {
-                        colorPrimary: '#007BFF', // Cambiado a azul
+                        colorPrimary: '#007BFF', // Changed to blue
                         colorInfo: '#B2D7C1'
                     }
                 }}

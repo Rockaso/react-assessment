@@ -5,12 +5,14 @@ import { useNavigate } from "react-router-dom";
 export function Welcome() {
     const navigate = useNavigate();
 
+    // Function to handle the start button click
     const handleStart = () => {
         navigate('/App');
     };
 
     return (
         <div
+            // Container styles
             style={{
                 display: "flex",
                 flexDirection: "column",
@@ -20,6 +22,7 @@ export function Welcome() {
             }}
         >
             <img
+                // Logo image
                 src="Auxo.svg"
                 alt="Logo"
                 style={{
@@ -29,6 +32,7 @@ export function Welcome() {
                 }}
             />
             <Button
+                // Start button
                 type="primary"
                 onClick={handleStart}
                 style={{

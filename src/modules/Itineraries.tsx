@@ -27,7 +27,7 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('api.json'); // Cambia esto por tu endpoint real
+        const response = await fetch('api.json'); // Change this to your real endpoint
         const data = await response.json();
 
         const formattedData = data.itineraries.map((itinerary: any) => ({
@@ -53,23 +53,23 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
     fetchData();
   }, []);
 
-  // Actualizar búsqueda
+  // Update search
   const handleSearch = (value: string) => {
     setSearchText(value);
     filterData(value, filterType);
   };
 
-  // Aplicar filtros
+  // Apply filters
   const handleFilter = (type: string | null) => {
     setFilterType(type);
     filterData(searchText, type);
   };
 
-  // Lógica de filtrado
+  // Filtering logic
   const filterData = (search: string, filter: string | null) => {
     let filtered = [...originalItineraries];
 
-    // Filtrar por búsqueda
+    // Filter by search
     if (search) {
       filtered = filtered.filter(
         (item) =>
@@ -78,13 +78,13 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
       );
     }
 
-    // Filtrar por tipo de filtro
+    // Filter by filter type
     if (filter === 'low_price') {
       filtered = filtered.sort((a, b) => parseFloat(a.price.slice(1)) - parseFloat(b.price.slice(1)));
     } else if (filter === 'high_rating') {
       filtered = filtered.sort((a, b) => b.rating - a.rating);
     } else if (filter === 'popular') {
-      filtered = filtered.sort((a, b) => b.rating - a.rating); // Asumimos popular como mejor rating
+      filtered = filtered.sort((a, b) => b.rating - a.rating); // Assume popular as better rating
     }
 
     setFilteredItineraries(filtered);
