@@ -10,7 +10,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/app" element={<App />} />
-            <Route path="./modules/Itineraries" element={<Itineraries/>} />
+            <Route path="./modules/Itineraries" element={<Itineraries onSelect={(itinerary) => { /* handle selection */ }} />} />
         </Routes>
     </BrowserRouter>
 );

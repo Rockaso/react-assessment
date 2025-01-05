@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Input, Button, Avatar, Layout, Menu, Dropdown } from 'antd';
-import { SearchOutlined, FilterOutlined, SmileOutlined, PoundOutlined, StarOutlined } from '@ant-design/icons';
+import { Table, Input, Button, Avatar, Layout, Menu, Dropdown, Modal } from 'antd';
+import { SearchOutlined, FilterOutlined, SmileOutlined, PoundOutlined, StarOutlined, DollarOutlined, UserOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
 
@@ -11,8 +11,8 @@ type Itinerary = {
   agent: string;
   agentLogo: string; // New property for agent logo
   rating: number;
+  legs: string[]; // New property for legs
 };
-
 
 const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ onSelect }) => {
   const [originalItineraries, setOriginalItineraries] = useState<Itinerary[]>([]);
@@ -20,6 +20,8 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [filterType, setFilterType] = useState<string | null>(null);
+  const [selectedItinerary, setSelectedItinerary] = useState<Itinerary | null>(null);
+  const [legs, setLegs] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,10 +37,12 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
           agent: itinerary.agent,
           agentLogo: itinerary.agent_logo, // Include agent logo
           rating: itinerary.agent_rating,
+          legs: itinerary.legs, // Include legs
         }));
 
         setOriginalItineraries(formattedData);
         setFilteredItineraries(formattedData);
+        setLegs(data.legs);
       } catch (error) {
         console.error('Error fetching itineraries:', error);
       } finally {
@@ -86,16 +90,41 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
     setFilteredItineraries(filtered);
   };
 
+  const handleRowClick = (record: Itinerary) => {
+    setSelectedItinerary(record);
+    onSelect(record);
+  };
+
+  const handleModalClose = () => {
+    setSelectedItinerary(null);
+  };
+
+  const getLegDetails = (legIds: string[]) => {
+    return legIds.map((legId) => legs.find((leg) => leg.id === legId));
+  };
+
   const columns = [
     {
       title: 'Id Itinerary',
       dataIndex: 'id',
       key: 'id',
+      render: (text: string) => (
+        <span>
+          <UserOutlined style={{ marginRight: 8 }} />
+          {text}
+        </span>
+      ),
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
+      render: (text: string) => (
+        <span>
+          <DollarOutlined style={{ marginRight: 8 }} />
+          {text}
+        </span>
+      ),
     },
     {
       title: 'Agent',
@@ -112,6 +141,12 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
       title: 'Agent Rating',
       dataIndex: 'rating',
       key: 'rating',
+      render: (text: number) => (
+        <span>
+          <StarOutlined style={{ marginRight: 8 }} />
+          {text}
+        </span>
+      ),
     },
   ];
 
@@ -148,6 +183,9 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
             <Button icon={<FilterOutlined />}>Filter</Button>
           </Dropdown>
         </div>
+        <div style={{ marginBottom: '20px' }}>
+          Select the itinerary from the list below
+        </div>
         <Table
           dataSource={filteredItineraries}
           columns={columns}
@@ -155,11 +193,41 @@ const Itineraries: React.FC<{ onSelect: (itinerary: Itinerary) => void }> = ({ o
           rowClassName={(record) => (record.id === 'It_4' ? 'highlight-row' : '')}
           pagination={false}
           onRow={(record) => ({
-            onClick: () => {
-              onSelect(record);
-            },
+            onClick: () => handleRowClick(record),
           })}
         />
+        {selectedItinerary && (
+          <Modal
+            title="Itinerary Legs Details"
+            visible={!!selectedItinerary}
+            onCancel={handleModalClose}
+            footer={[
+              <Button key="close" onClick={handleModalClose}>
+                Close
+              </Button>,
+            ]}
+          >
+            <h3>Legs:</h3>
+            {getLegDetails(selectedItinerary.legs).map((leg) => (
+              <div key={leg.id} style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <p><strong>Departure Airport:</strong> <EnvironmentOutlined style={{ marginRight: 8 }} /> {leg.departure_airport}</p>
+                  <p><strong>Arrival Airport:</strong> <EnvironmentOutlined style={{ marginRight: 8 }} /> {leg.arrival_airport}</p>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <p><strong>Departure Time:</strong> <ClockCircleOutlined style={{ marginRight: 8 }} /> {leg.departure_time}</p>
+                  <p><strong>Arrival Time:</strong> <ClockCircleOutlined style={{ marginRight: 8 }} /> {leg.arrival_time}</p>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <p><strong>Stops:</strong> {leg.stops}</p>
+                  <p><strong>Airline:</strong> {leg.airline_name}</p>
+                </div>
+                <p><strong>Duration:</strong> {leg.duration_mins} mins</p>
+                <hr />
+              </div>
+            ))}
+          </Modal>
+        )}
       </Content>
     </Layout>
   );

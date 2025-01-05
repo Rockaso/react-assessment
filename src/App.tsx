@@ -69,7 +69,7 @@ export function App() {
                     },
 
                     token: {
-                        colorPrimary: '#00B96B',
+                        colorPrimary: '#007BFF', // Cambiado a azul
                         colorInfo: '#B2D7C1'
                     }
                 }}
@@ -115,7 +115,6 @@ export function App() {
                                 borderRadius: borderRadiusLG,
                             }}
                         >
-
                             {
                                 (() => {
                                     switch (menuIndex) {
